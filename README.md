@@ -1,6 +1,6 @@
 # vibe_coding
 
-Overview: It is a simple, static blog website designed to showcase content relevant to the course and serve as a practical example of building and deploying a web page. The blog features straightforward HTML structure, making it easy to understand and maintain, which is ideal for learning basic web development concepts. The main goal of this blog is to provide a platform for sharing information, ideas, and updates related to the NOS110 class in an accessible online format. It serves as both a learning tool and a communication medium for students and instructors.
+Overview: It is a simple, static blog website designed to showcase content relevant to the course and serve as a practical example of building and deploying a web page. The blog features straightforward HTML structure, making it easy to understand and maintain, which is ideal for learning basic web development concepts. 
 
 Contributions: This blog project was a collaborative effort between two team members. My partner was responsible for designing and developing the website, including implementing all the features and creating the HTML structure. I managed the GitHub repository by setting up version control, created the presentation materials, and wrote the deployment document to guide others on how to publish and maintain the blog. I also helped my partner with adding the required features we needed from the wheel. Together, we combined our skills to successfully complete the project and ensure it is well-documented and easy to deploy.
 
