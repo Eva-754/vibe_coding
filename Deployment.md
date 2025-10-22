@@ -2,7 +2,7 @@
 
 ## Overview  
 This document explains how to run and deploy your static HTML blog inside GitHub Codespaces and optionally publish it using GitHub Pages for public access.
-
+Made by AI
 ---
 
 ## Prerequisites  
@@ -71,3 +71,4 @@ For support or questions, please contact: Eva Pathak & Kat Morris
 ---
 
 **End of Document**
+
