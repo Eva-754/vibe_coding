@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kat's Gallery & Blog</title>
+  <style>
+    /* Reset & basic */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      display: flex;
+      min-height: 100vh;
+      outline-offset: 2px;
+    }
+    h2, h3 {
+      margin-top: 0;
+    }
+
+    /* Left buttons container (vertical, fixed) */
+    #filter-buttons {
+      position: fixed;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 300;
+    }
+
+    #filter-buttons button {
+      background-color: #a5d6a7;
+      border: 2px solid #388e3c;
+      color: #1b5e20;
+      padding: 10px 16px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 120px;
+      text-align: center;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    #filter-buttons button:hover,
+    #filter-buttons button:focus {
+      background-color: #66bb6a;
+      color: #e8f5e9;
+      outline: none;
+      box-shadow: 0 0 6px #388e3c;
+    }
+    #filter-buttons button.active {
+      background-color: #388e3c;
+      color: #e8f5e9;
+      cursor: default;
+      box-shadow: inset 0 0 6px #1b5e20;
+    }
+
+    /* Bounce animation for button */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .bounce {
+      animation: bounce 0.4s ease;
+    }
+
+    /* Main content area */
+    #content {
+      margin-left: 150px;
+      padding: 30px 40px 40px 40px;
+      flex-grow: 1;
+      max-width: 900px;
+    }
+
+    /* About us section */
+    #about-us {
+      margin-bottom: 15px;
+    }
+    #fun-quote {
+      font-style: italic;
+      color: #1b5e20;
+      margin-top: 6px;
+      font-size: 1.1rem;
+    }
+
+    /* Articles container and articles */
+    #articles-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    article {
+      background-color: #c8e6c9;
+      border: 2px solid #388e3c;
+      border-radius: 12px;
+      padding: 16px 20px 20px 20px;
+      box-shadow: 2px 3px 6px rgba(56,142,60,0.3);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.3s ease;
+    }
+
+    /* Hover glow effect */
+    article:hover {
+      box-shadow: 0 0 15px 4px #66bb6a;
+    }
+
+    article h3 {
+      color: #1b5e20;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    article img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      object-fit: contain;
+      border: 1px solid #388e3c;
+      box-shadow: 1px 1px 4px rgba(27,94,32,0.4);
+    }
+
+    .art-image {
+      height: 160px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    article p {
+      margin: 0 0 10px 0;
+      color: #2e7d32;
+      font-size: 0.95rem;
+      line-height: 1.3;
+    }
+
+    /* Read More button */
+    .read-more-btn {
+      align-self: flex-start;
+      background-color: #81c784;
+      border: 2px solid #388e3c;
+      color: #1b5e20;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .read-more-btn:hover,
+    .read-more-btn:focus {
+      background-color: #4caf50;
+      color: #e8f5e9;
+      outline: none;
+    }
+
+    /* Full text initially hidden */
+    .full-text {
+      display: none;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #1b5e20;
+      font-style: italic;
+    }
+    /* Show full text when active */
+    .full-text.show {
+      display: block;
+    }
+
+    /* Popup overlay */
+    #popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 50, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #popup {
+      background-color: #d0f0d0;
+      border: 3px solid #2e7d32;
+      border-radius: 14px;
+      max-width: 450px;
+      padding: 20px;
+      box-shadow: 0 6px 16px rgba(34, 97, 34, 0.8);
+      position: relative;
+      text-align: center;
+      color: #1b5e20;
+    }
+
+    #popup img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      box-shadow: 1px 1px 6px rgba(27,94,32,0.5);
+    }
+
+    #popup-close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #2e7d32;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    #popup-close-btn:hover,
+    #popup-close-btn:focus {
+      color: #145214;
+      outline: none;
+    }
+
+    /* Read More tip box */
+    #read-more-tip {
+      position: fixed;
+      top: 80px;
+      left: 160px;
+      background-color: #d7f0d7;
+      border: 2px solid #3d7d3d;
+      border-radius: 10px;
+      padding: 10px 35px 10px 15px;
+      font-weight: 700;
+      color: #285228;
+      user-select: none;
+      box-shadow: 0 4px 8px rgba(61,125,61,0.3);
+      display: none;
+      max-width: 180px;
+      z-index: 200;
+      font-size: 1rem;
+      position: fixed;
+    }
+    /* Close button inside tip */
+    #tip-close-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #285228;
+      cursor: pointer;
+      line-height: 1;
+      user-select: none;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      transition: color 0.3s ease;
+    }
+    #tip-close-btn:hover,
+    #tip-close-btn:focus {
+      color: #1a3d1a;
+      outline: none;
+    }
+
+    /* Accessibility focus outline override */
+    button:focus-visible,
+    #filter-buttons button:focus-visible {
+      outline: 3px solid #1b5e20;
+      outline-offset: 2px;
+    }
+
+    /* Confetti styles */
+    .confetti-piece {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background-color: #4caf50;
+      opacity: 0.9;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: confetti-fall 1s forwards ease-out;
+      z-index: 1100;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(150px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      #filter-buttons {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      #content {
+        margin-left: 0;
+        padding: 20px 15px;
+        max-width: 100%;
+      }
+      #read-more-tip {
+        left: 10px;
+        top: auto;
+        bottom: 80px;
+        max-width: 140px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Filter buttons on left -->
+  <div id="filter-buttons" role="navigation" aria-label="Filter content">
+    <button id="btn-all" class="active" aria-pressed="true">Show All</button>
+    <button id="btn-arts" aria-pressed="false">Arts</button>
+    <button id="btn-blogs" aria-pressed="false">Blogs</button>
+  </div>
+
+  <!-- Main content -->
+  <main id="content" tabindex="-1" aria-live="polite">
+    <section id="about-us" tabindex="-1" >
+      <h2>About Us</h2>
+      <p>Hi I'm Kat, and this is one of my many, many, MANY websites!
+
+Hi, I'm Eva and I have built multiple codebased websites, including this one I built with Kat! </p>
+      <p>For questions or feedback, feel free to reach out.</p>
+      <p id="fun-quote" aria-live="polite"></p>
+    </section>
+
+    <div id="articles-container">
+      <article data-filter="art" data-title="Hetalia Art">
+        <h3>Denmark & Sweden</h3>
+        <img src="https://files.catbox.moe/lngv4r.png" alt="densu" class="art-image" />
+        <p>Idk Man.</p>
+      </article>
+
+      <article data-filter="blog" data-title="Blog Post: My Stupid Daughter">
+        <h3>Blog Post: My Stupid Daughter</h3>
+        <img src="https://files.catbox.moe/f8a1kw.jpg" alt="My Stupid Daughter"/>
+        <p class="summary">Cats Right?</p>
+        <p class="full-text" id="blog1-fulltext">Cats are really interesting. I recently gained and lost a cat. I found this sweet girl on the side of the road, and lured her out with chicken tenders.</p>
+        <button class="read-more-btn" aria-expanded="false" aria-controls="blog1-fulltext">Read More</button>
+      </article>
+
+      <article data-filter="art" data-title="Kinstagram">
+        <h3>Doesn't everyone have more than one side?</h3>
+        <img src="https://files.catbox.moe/axcs94.png" alt="Kinsta" class="art-image" />
+        <p>Well?</p>
+      </article>
+    </div>
+  </main>
+
+  <!-- Popup for image -->
+  <div id="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-title" tabindex="-1">
+    <div id="popup">
+      <button id="popup-close-btn" aria-label="Close popup">&times;</button>
+      <h2 id="popup-title">Popup Image</h2>
+      <img src="https://files.catbox.moe/kest2o.jpg" alt="Popup Visual" />
+    </div>
+  </div>
+
+  <!-- Read More tip box -->
+  <div id="read-more-tip" role="alert" aria-live="polite">
+    Click <strong>Read More</strong>!
+    <button id="tip-close-btn" aria-label="Close read more tip" title="Close tip">&times;</button>
+  </div>
+
+  <script>
+    // Elements
+    const btnAll = document.getElementById('btn-all');
+    const btnArts = document.getElementById('btn-arts');
+    const btnBlogs = document.getElementById('btn-blogs');
+    const articlesContainer = document.getElementById('articles-container');
+    const articles = Array.from(articlesContainer.querySelectorAll('article'));
+
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupCloseBtn = document.getElementById('popup-close-btn');
+
+    const readMoreTip = document.getElementById('read-more-tip');
+    const tipCloseBtn = document.getElementById('tip-close-btn');
+
+    // Filter function
+    function filterArticles(filter) {
+      articles.forEach(article => {
+        const type = article.getAttribute('data-filter');
+        if (filter === 'all' || filter === type) {
+          article.style.display = '';
+        } else {
+          article.style.display = 'none';
+        }
+      });
+    }
+
+    // Set active button styles and aria-pressed
+    function setActiveButton(activeBtn) {
+      [btnAll, btnArts, btnBlogs].forEach(btn => {
+        const isActive = btn === activeBtn;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive);
+      });
+    }
+
+    // Filter button handlers
+    btnAll.addEventListener('click', () => {
+      setActiveButton(btnAll);
+      filterArticles('all');
+      btnAll.classList.add('bounce');
+      setTimeout(() => btnAll.classList.remove('bounce'), 400);
+    });
+    btnArts.addEventListener('click', () => {
+      setActiveButton(btnArts);
+      filterArticles('art');
+      btnArts.classList.add('bounce');
+      setTimeout(() => btnArts.classList.remove('bounce'), 400);
+    });
+    btnBlogs.addEventListener('click', () => {
+      setActiveButton(btnBlogs);
+      filterArticles('blog');
+      btnBlogs.classList.add('bounce');
+      setTimeout(() => btnBlogs.classList.remove('bounce'), 400);
+    });
+
+    // Read More toggle with confetti
+    articles.forEach(article => {
+      const readMoreBtn = article.querySelector('.read-more-btn');
+      const fullText = article.querySelector('.full-text');
+
+      if (readMoreBtn && fullText) {
+        readMoreBtn.addEventListener('click', () => {
+          const expanded = readMoreBtn.getAttribute('aria-expanded') === 'true';
+          if (!expanded) {
+            fullText.classList.add('show');
+            readMoreBtn.textContent = 'Read Less';
+            readMoreBtn.setAttribute('aria-expanded', 'true');
+            launchConfetti(readMoreBtn);
+          } else {
+            fullText.classList.remove('show');
+            readMoreBtn.textContent = 'Read More';
+            readMoreBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+
+    // Launch simple confetti burst at element position
+    function launchConfetti(target) {
+      const rect = target.getBoundingClientRect();
+      const confettiCount = 15;
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti-piece');
+        confetti.style.backgroundColor = `hsl(${Math.random()*120+60}, 80%, 50%)`;
+        confetti.style.left = (rect.left + rect.width/2) + (Math.random()*60 - 30) + 'px';
+        confetti.style.top = (rect.top + rect.height/2) + (Math.random()*20 - 10) + 'px';
+        confetti.style.animationDuration = (Math.random() * 0.8 + 0.7) + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => {
+          confetti.remove();
+        }, 1500);
+      }
+    }
+
+    // Popup close button
+    popupCloseBtn.addEventListener('click', () => {
+      popupOverlay.style.display = 'none';
+      popupOverlay.setAttribute('aria-hidden', 'true');
+    });
+
+    // Read More tip close button
+    tipCloseBtn.addEventListener('click', () => {
+      readMoreTip.style.display = 'none';
+    });
+
+    // Show read more tip if any read more exists and is not expanded
+    function showReadMoreTip() {
+      const anyCollapsed = articles.some(article => {
+        const btn = article.querySelector('.read-more-btn');
+        return btn && btn.getAttribute('aria-expanded') === 'false';
+      });
+      if (anyCollapsed) {
+        readMoreTip.style.display = 'block';
+      }
+    }
+    showReadMoreTip();
+
+    // Fun quotes to display under About Us
+    const funQuotes = [
+      "“Creativity is intelligence having fun.” — Albert Einstein",
+      "“Every artist was first an amateur.” — Ralph Waldo Emerson",
+      "“Art enables us to find ourselves and lose ourselves at the same time.” — Thomas Merton",
+      "“Blogging: where words meet passion.”",
+      "“Life is the art of drawing without an eraser.”",
+      "“A blog is a conversation, not a code.”",
+      "“The best way to predict the future is to create it.” — Peter Drucker"
+    ];
+    function showRandomQuote() {
+      const quoteEl = document.getElementById('fun-quote');
+      const randomIndex = Math.floor(Math.random() * funQuotes.length);
+      quoteEl.textContent = funQuotes[randomIndex];
+    }
+    showRandomQuote();
+
+    // Keyboard shortcut: Press 'b' to toggle Blog filter
+    window.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        if (btnBlogs.classList.contains('active')) {
+          btnAll.click();
+        } else {
+          btnBlogs.click();
+        }
+      }
+    });
+
+  </script>
+</body>
+</html>
