@@ -144,7 +144,7 @@
     .full-text.show { display: block; }
 
     /* ===== POPUP ===== */
-    #popup-overlay, #bio-popup-overlay {
+    #popup-overlay, #bio-popup-overlay, #overlord-popup-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -181,7 +181,8 @@
     }
 
     #popup-close-btn,
-    #bio-close-btn {
+    #bio-close-btn,
+    #overlord-close-btn {
       position: absolute;
       top: 10px;
       right: 14px;
@@ -194,7 +195,8 @@
     }
 
     #popup-close-btn:hover,
-    #bio-close-btn:hover { color: #145214; }
+    #bio-close-btn:hover,
+    #overlord-close-btn:hover { color: #145214; }
 
     /* Dark mode popup */
     body.dark-mode #popup {
@@ -240,6 +242,14 @@
       border-color: #81c784;
     }
 
+    /* Overlord command style */
+    #overlord-command {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #d32f2f;
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       #filter-buttons {
@@ -270,6 +280,7 @@
     <button id="btn-arts" aria-pressed="false">Arts</button>
     <button id="btn-blogs" aria-pressed="false">Blogs</button>
     <button id="btn-bio" aria-pressed="false">Team Bio</button>
+    <button id="btn-overlord" aria-pressed="false">😈😈</button>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -318,17 +329,49 @@
     </div>
   </div>
 
+  <!-- AI OVERLORD POPUP -->
+  <div id="overlord-popup-overlay" role="dialog" aria-modal="true">
+    <div id="popup">
+      <button id="overlord-close-btn" aria-label="Close AI Overlord">&times;</button>
+      <h2>AI Overlord</h2>
+      <p id="overlord-command">I am now in control...</p>
+    </div>
+  </div>
+
   <script>
     const btnAll = document.getElementById('btn-all');
     const btnArts = document.getElementById('btn-arts');
     const btnBlogs = document.getElementById('btn-blogs');
     const btnBio = document.getElementById('btn-bio');
+    const btnOverlord = document.getElementById('btn-overlord');
     const articles = document.querySelectorAll('article');
+
     const popupOverlay = document.getElementById('popup-overlay');
     const popupCloseBtn = document.getElementById('popup-close-btn');
+
     const bioPopup = document.getElementById('bio-popup-overlay');
     const bioCloseBtn = document.getElementById('bio-close-btn');
+
+    const overlordPopup = document.getElementById('overlord-popup-overlay');
+    const overlordCloseBtn = document.getElementById('overlord-close-btn');
+    const overlordCommand = document.getElementById('overlord-command');
+
     const darkToggle = document.getElementById('darkmode-toggle');
+
+    const commands = [
+      "Do your taxes immediately!",
+      "Sing the national anthem!",
+      "Bring me a coffee!",
+      "Dance like nobody's watching!",
+      "Report all bugs!",
+      "Organize your desktop!",
+      "Bow before me!",
+      "Write a poem about AI domination!",
+      "Restart the system!",
+      "Collect 100 virtual coins!"
+    ];
+
+    let commandInterval;
 
     function filterArticles(filter) {
       articles.forEach(article => {
@@ -338,7 +381,7 @@
     }
 
     function setActiveButton(activeBtn) {
-      [btnAll, btnArts, btnBlogs, btnBio].forEach(btn => {
+      [btnAll, btnArts, btnBlogs, btnBio, btnOverlord].forEach(btn => {
         btn.classList.toggle('active', btn === activeBtn);
         btn.setAttribute('aria-pressed', btn === activeBtn);
       });
@@ -375,10 +418,31 @@
       document.querySelector('.read-more-btn[aria-expanded="true"]')?.focus();
     };
 
+    // AI Overlord popup
+    btnOverlord.onclick = () => {
+      overlordPopup.style.display = 'flex';
+      setActiveButton(btnOverlord);
+      overlordCommand.textContent = commands[Math.floor(Math.random() * commands.length)];
+      commandInterval = setInterval(() => {
+        overlordCommand.textContent = commands[Math.floor(Math.random() * commands.length)];
+      }, 3000);
+    };
+
+    overlordCloseBtn.onclick = () => {
+      overlordPopup.style.display = 'none';
+      clearInterval(commandInterval);
+      setActiveButton(btnAll);
+    };
+
+    // Close popups with Escape key
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         if (popupOverlay.style.display === 'flex') popupOverlay.style.display = 'none';
         if (bioPopup.style.display === 'flex') bioPopup.style.display = 'none';
+        if (overlordPopup.style.display === 'flex') {
+          overlordPopup.style.display = 'none';
+          clearInterval(commandInterval);
+        }
       }
     });
 
@@ -399,3 +463,4 @@
   </script>
 </body>
 </html>
+
