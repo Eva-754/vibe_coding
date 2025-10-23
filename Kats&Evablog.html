@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kat's Gallery & Blog</title>
+  <title>Kat's & Eva's Blog</title>
   <style>
     /* ===== BASIC RESET ===== */
     body {
@@ -144,7 +144,7 @@
     .full-text.show { display: block; }
 
     /* ===== POPUP ===== */
-    #popup-overlay {
+    #popup-overlay, #bio-popup-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -180,7 +180,8 @@
       box-shadow: 0 4px 10px rgba(27,94,32,0.5);
     }
 
-    #popup-close-btn {
+    #popup-close-btn,
+    #bio-close-btn {
       position: absolute;
       top: 10px;
       right: 14px;
@@ -192,7 +193,8 @@
       cursor: pointer;
     }
 
-    #popup-close-btn:hover { color: #145214; }
+    #popup-close-btn:hover,
+    #bio-close-btn:hover { color: #145214; }
 
     /* Dark mode popup */
     body.dark-mode #popup {
@@ -267,16 +269,11 @@
     <button id="btn-all" class="active" aria-pressed="true">Show All</button>
     <button id="btn-arts" aria-pressed="false">Arts</button>
     <button id="btn-blogs" aria-pressed="false">Blogs</button>
+    <button id="btn-bio" aria-pressed="false">Team Bio</button>
   </div>
 
   <!-- MAIN CONTENT -->
   <main id="content" aria-live="polite">
-    <section id="about-us">
-      <h2>About Us</h2>
-      <p>Hi I'm Kat, and this is one of my many, many, MANY websites!</p>
-      <p>For questions or feedback, feel free to reach out.</p>
-    </section>
-
     <div id="articles-container">
       <article data-filter="art">
         <h3>Denmark & Sweden</h3>
@@ -310,13 +307,27 @@
     </div>
   </div>
 
+  <!-- TEAM BIO POPUP -->
+  <div id="bio-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="bio-title">
+    <div id="popup">
+      <button id="bio-close-btn" aria-label="Close team bio">&times;</button>
+      <h2 id="bio-title">Team Bio</h2>
+      <p>Hi, I'm <strong>Kat</strong> — and this is one of my many, many, MANY websites!</p>
+      <p>Hey, I'm <strong>Eva</strong>. I helped Kat build and make this site! We worked together on design, layout, and content ideas to bring it to life.</p>
+      <p>If you have questions or feedback, we’d love to hear from you!</p>
+    </div>
+  </div>
+
   <script>
     const btnAll = document.getElementById('btn-all');
     const btnArts = document.getElementById('btn-arts');
     const btnBlogs = document.getElementById('btn-blogs');
+    const btnBio = document.getElementById('btn-bio');
     const articles = document.querySelectorAll('article');
     const popupOverlay = document.getElementById('popup-overlay');
     const popupCloseBtn = document.getElementById('popup-close-btn');
+    const bioPopup = document.getElementById('bio-popup-overlay');
+    const bioCloseBtn = document.getElementById('bio-close-btn');
     const darkToggle = document.getElementById('darkmode-toggle');
 
     function filterArticles(filter) {
@@ -327,7 +338,7 @@
     }
 
     function setActiveButton(activeBtn) {
-      [btnAll, btnArts, btnBlogs].forEach(btn => {
+      [btnAll, btnArts, btnBlogs, btnBio].forEach(btn => {
         btn.classList.toggle('active', btn === activeBtn);
         btn.setAttribute('aria-pressed', btn === activeBtn);
       });
@@ -337,6 +348,17 @@
     btnArts.onclick = () => { filterArticles('art'); setActiveButton(btnArts); };
     btnBlogs.onclick = () => { filterArticles('blog'); setActiveButton(btnBlogs); };
 
+    // Team Bio popup
+    btnBio.onclick = () => {
+      bioPopup.style.display = 'flex';
+      setActiveButton(btnBio);
+    };
+    bioCloseBtn.onclick = () => {
+      bioPopup.style.display = 'none';
+      setActiveButton(btnAll);
+    };
+
+    // Blog "Read More" popup toggle
     document.querySelectorAll('.read-more-btn').forEach(btn => {
       const fullText = btn.previousElementSibling;
       btn.addEventListener('click', () => {
@@ -354,11 +376,13 @@
     };
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && popupOverlay.style.display === 'flex') {
-        popupOverlay.style.display = 'none';
+      if (e.key === 'Escape') {
+        if (popupOverlay.style.display === 'flex') popupOverlay.style.display = 'none';
+        if (bioPopup.style.display === 'flex') bioPopup.style.display = 'none';
       }
     });
 
+    // Dark mode persistence
     const storedMode = localStorage.getItem('darkMode');
     if (storedMode === 'enabled') {
       document.body.classList.add('dark-mode');
