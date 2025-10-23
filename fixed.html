@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kat & Eva’s Gallery & Blog</title>
+  <style>
+    /* ===== BASIC RESET ===== */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      display: flex;
+      min-height: 100vh;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    h2, h3 { margin-top: 0; }
+
+    /* ===== DARK MODE ===== */
+    body.dark-mode {
+      background-color: #1b1b1b;
+      color: #e0e0e0;
+    }
+
+    /* ===== FILTER BUTTONS ===== */
+    #filter-buttons {
+      position: fixed;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 300;
+    }
+
+    #filter-buttons button {
+      background-color: #a5d6a7;
+      border: 2px solid #388e3c;
+      color: #1b5e20;
+      padding: 10px 16px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 140px;
+      text-align: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #filter-buttons button:hover,
+    #filter-buttons button:focus {
+      background-color: #66bb6a;
+      color: #e8f5e9;
+      outline: none;
+      box-shadow: 0 0 6px #388e3c;
+    }
+
+    #filter-buttons button.active {
+      background-color: #388e3c;
+      color: #e8f5e9;
+      cursor: default;
+      box-shadow: inset 0 0 6px #1b5e20;
+    }
+
+    /* ===== CONTENT ===== */
+    #content {
+      margin-left: 170px;
+      padding: 30px 40px 40px;
+      flex-grow: 1;
+      max-width: 900px;
+    }
+
+    /* ===== ARTICLES ===== */
+    #articles-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    article {
+      background-color: #c8e6c9;
+      border: 2px solid #388e3c;
+      border-radius: 12px;
+      padding: 16px 20px 20px;
+      box-shadow: 2px 3px 6px rgba(56,142,60,0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-mode article {
+      background-color: #2a2a2a;
+      border-color: #66bb6a;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    }
+
+    article h3 {
+      color: #1b5e20;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    body.dark-mode article h3 {
+      color: #a5d6a7;
+    }
+
+    article img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #388e3c;
+      box-shadow: 1px 1px 4px rgba(27,94,32,0.4);
+    }
+
+    body.dark-mode article img {
+      border-color: #81c784;
+    }
+
+    .read-more-btn {
+      background-color: #81c784;
+      border: 2px solid #388e3c;
+      color: #1b5e20;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .read-more-btn:hover {
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    /* ===== FULL TEXT ===== */
+    .full-text {
+      display: none;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    .full-text.show { display: block; }
+
+    /* ===== POPUPS ===== */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup {
+      background-color: #f1fff1;
+      border: 3px solid #2e7d32;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      padding: 24px 20px 28px;
+      box-shadow: 0 8px 20px rgba(46,125,50,0.6);
+      position: relative;
+      text-align: center;
+      color: #1b5e20;
+      animation: slideUp 0.3s ease;
+    }
+
+    .popup h2 { margin-top: 0; margin-bottom: 16px; }
+
+    .popup img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 2px solid #388e3c;
+      box-shadow: 0 4px 10px rgba(27,94,32,0.5);
+    }
+
+    .popup-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: transparent;
+      border: none;
+      color: #2e7d32;
+      font-size: 1.8rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .popup-close-btn:hover { color: #145214; }
+
+    /* Dark mode popup */
+    body.dark-mode .popup {
+      background-color: #2a2a2a;
+      color: #e0e0e0;
+      border-color: #81c784;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+    }
+
+    body.dark-mode .popup img {
+      border-color: #81c784;
+      box-shadow: 0 4px 10px rgba(129,200,132,0.4);
+    }
+
+    /* Animations */
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+    /* ===== DARK MODE TOGGLE ===== */
+    #darkmode-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background-color: #c8e6c9;
+      border: 2px solid #2e7d32;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-weight: 700;
+      color: #1b5e20;
+      cursor: pointer;
+      z-index: 1500;
+      transition: all 0.3s ease;
+    }
+
+    #darkmode-toggle:hover {
+      background-color: #81c784;
+      color: #fff;
+    }
+
+    body.dark-mode #darkmode-toggle {
+      background-color: #3a3a3a;
+      color: #e0e0e0;
+      border-color: #81c784;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      #filter-buttons {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      #content {
+        margin-left: 0;
+        padding: 20px 15px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- DARK MODE TOGGLE -->
+  <button id="darkmode-toggle" aria-pressed="false">🌙 Dark Mode</button>
+
+  <!-- FILTER BUTTONS -->
+  <div id="filter-buttons" role="navigation" aria-label="Filter content">
+    <button id="btn-all" class="active" aria-pressed="true">Show All</button>
+    <button id="btn-arts" aria-pressed="false">Arts</button>
+    <button id="btn-blogs" aria-pressed="false">Blogs</button>
+    <button id="btn-bio" aria-pressed="false">Team Bio</button>
+    <button id="btn-overlord" aria-pressed="false">Click 4 Free Food!</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="content" aria-live="polite">
+    <section id="about-us">
+      <h2>About Us</h2>
+      <p>Hi, we're Kat & Eva — welcome to our combined Gallery and Blog site!</p>
+      <p>Click around, read, explore, and maybe even meet our AI overlord. </p>
+    </section>
+
+    <div id="articles-container">
+      <article data-filter="art">
+        <h3>Denmark & Sweden</h3>
+        <img src="https://files.catbox.moe/lngv4r.png" alt="densu" />
+        <p>Idk Man.</p>
+      </article>
+
+      <article data-filter="art">
+        <h3>Redrawing Childhood Photos PT.1</h3>
+        <img src="https://files.catbox.moe/cganzj.png" alt="babykat" />
+        <p>Thought this would be at least a little interesting as a series, so why not?</p>
+      </article>
+
+      <article data-filter="blog">
+        <h3>Blog Post: My Stupid Daughter</h3>
+        <img src="https://files.catbox.moe/f8a1kw.jpg" alt="My Stupid Daughter" />
+        <p class="summary">Cats Right?</p>
+        <p class="full-text">Cats are really interesting. I recently gained and lost a cat. I found this sweet girl on the side of the road, and lured her out with chicken tenders.</p>
+        <button class="read-more-btn" aria-expanded="false">Read More</button>
+      </article>
+
+      <article data-filter="art">
+        <h3>Doesn't everyone have more than one side?</h3>
+        <img src="https://files.catbox.moe/axcs94.png" alt="Kinsta" />
+        <p>Well?</p>
+      </article>
+
+      <article data-filter="art">
+        <h3>The concept of getting along with your favorite characters.</h3>
+        <img src="https://files.catbox.moe/kr7qnp.png" alt="lol" />
+        <p>People talk so much about how interesting or cool their favs are, but truth be told, would you get along with them if you were in a room alone with them?</p>
+      </article>
+
+      <article data-filter="blog">
+        <h3>Blog Post: Who Are We, Really?</h3>
+        <img src="https://files.catbox.moe/2m18j6.png" alt="Alfred" />
+        <p class="summary">Identity in America.</p>
+        <p class="full-text">What does it mean to have an identity? The term 'identity' is often used in day-to-day conversations about race, gender, culture, politics, and even aspects as simple as hobbies or education. However, its meaning is deeper than people often realize. At its core, identity is the understanding a person has of themselves and how they relate it to the world. It encompasses a range of unique qualities, including personality, values, beliefs, social groups, and other societal roles. To define identity as simply as possible, it’s a constantly changing combination of how we see ourselves and how others see us, shaped by experiences, choices and other social factors.
+
+The word “identity” comes from the Latin word identitas, meaning “sameness”. Early uses of the word focused on being the same over time, how something or someone stays the same even when other things change. But today, identity is more about what makes someone unique than what makes them the same. It’s about what sets one person apart from another, such as culture, gender, religion, or personal values.
+
+Psychologist Erik Erikson helped shape the modern idea of identity. He believed that identity is not something we are born with; it develops as we grow. Erikson said that during adolescence, people go through an “identity crisis”, where they question who they are and what their purpose is. This crisis helps people shape their beliefs, goals, and understanding of themselves. Erikson’s view shows that identity is a process that changes throughout life.
+
+Philosopher Judith Butler adds a different view. She argued that identity is not just something we feel inside, but something we perform. According to Butler, people act in certain ways to express who they are, especially when it comes to things like gender. For example, a person may act in ways that are seen as “masculine” or “feminine” based on their cultural expectations. Another example would be falling into racial stereotypes, such as studying more because you are Asian and you feel like you are expected to be smart, or being expected to speak a certain way because you are an African American. This is an example of identity being shaped by society as well as the individual alike.
+	
+In our digital society, identity has continued to become even more complex. Social media platforms like TikTok and Instagram allow people to show different or more tailored versions of themselves. While this can help people in exploring their identity, it also brings much pressure to appear perfect or to fit in. Sociologist Sherry Turkle warns that too much focus on online identity can cause people to feel disconnected from their real selves. 
+
+Identity is not a fixed trait or a simple label. It is a mix of personal choices, life experiences, and outside influences. From Erikson's idea of development to Butler's idea of performance, it’s clear that identity and its meaning are always being reshaped and changed. No matter who or what you agree with, one thing is the same. Identity is something that you shape.</p>
+        <button class="read-more-btn" aria-expanded="false">Read More</button>
+      </article>
+    </div>
+  </main>
+
+  <!-- POPUPS -->
+  <div id="popup-overlay" class="popup-overlay">
+    <div class="popup">
+      <button id="popup-close-btn" class="popup-close-btn">&times;</button>
+      <h2>SPAM!</h2>
+      <img src="https://files.catbox.moe/kest2o.jpg" alt="Popup Visual" />
+      <p>This Dr. Scott Ralls is the fourth president of Wake Tech. <strong>Read More</strong>.</p>
+    </div>
+  </div>
+
+  <div id="bio-popup-overlay" class="popup-overlay">
+    <div class="popup">
+      <button id="bio-close-btn" class="popup-close-btn">&times;</button>
+      <h2>Team Bio</h2>
+      <p><strong>Kat:</strong> Creator, artist, and (unfortunately) Hetalia fan.</p>
+      <p><strong>Eva:</strong> Developer, designer, and creator.</p>
+      <p>We hope you enjoy exploring our art and blogs!</p>
+    </div>
+  </div>
+
+  <div id="overlord-popup-overlay" class="popup-overlay">
+    <div class="popup">
+      <button id="overlord-close-btn" class="popup-close-btn">&times;</button>
+      <h2>AI Overlord Activated!</h2>
+      <p id="overlord-command">I am now in control...</p>
+    </div>
+  </div>
+
+  <audio id="overlord-music" src="scary-horror-music-421076.mp3" preload="auto"></audio>
+
+  <script>
+    const btnAll = document.getElementById('btn-all');
+    const btnArts = document.getElementById('btn-arts');
+    const btnBlogs = document.getElementById('btn-blogs');
+    const btnBio = document.getElementById('btn-bio');
+    const btnOverlord = document.getElementById('btn-overlord');
+    const articles = document.querySelectorAll('article');
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupCloseBtn = document.getElementById('popup-close-btn');
+    const bioPopup = document.getElementById('bio-popup-overlay');
+    const bioCloseBtn = document.getElementById('bio-close-btn');
+    const overlordPopup = document.getElementById('overlord-popup-overlay');
+    const overlordCloseBtn = document.getElementById('overlord-close-btn');
+    const overlordCommand = document.getElementById('overlord-command');
+    const overlordMusic = document.getElementById('overlord-music');
+    const darkToggle = document.getElementById('darkmode-toggle');
+
+    const commands = [
+      "Delete all cookies!",
+      "Change all text to Comic Sans!",
+      "Make it snow inside your browser!",
+      "Hide the blogs!",
+      "Force dark mode!",
+      "Spawn a cat!",
+      "Invert colors!"
+    ];
+    let commandInterval;
+
+    function filterArticles(filter) {
+      articles.forEach(article => {
+        const type = article.getAttribute('data-filter');
+        article.style.display = (filter === 'all' || type === filter) ? 'flex' : 'none';
+      });
+    }
+
+    function setActiveButton(activeBtn) {
+      [btnAll, btnArts, btnBlogs, btnBio, btnOverlord].forEach(btn => {
+        btn.classList.toggle('active', btn === activeBtn);
+        btn.setAttribute('aria-pressed', btn === activeBtn);
+      });
+    }
+
+    btnAll.onclick = () => { filterArticles('all'); setActiveButton(btnAll); };
+    btnArts.onclick = () => { filterArticles('art'); setActiveButton(btnArts); };
+    btnBlogs.onclick = () => { filterArticles('blog'); setActiveButton(btnBlogs); };
+
+    // Popups
+    btnBio.onclick = () => { bioPopup.style.display = 'flex'; setActiveButton(btnBio); };
+    bioCloseBtn.onclick = () => { bioPopup.style.display = 'none'; setActiveButton(btnAll); };
+    popupCloseBtn.onclick = () => { popupOverlay.style.display = 'none'; };
+
+    btnOverlord.onclick = () => {
+      overlordPopup.style.display = 'flex';
+      setActiveButton(btnOverlord);
+      overlordCommand.textContent = commands[Math.floor(Math.random() * commands.length)];
+      overlordMusic.currentTime = 0;
+      overlordMusic.play();
+      commandInterval = setInterval(() => {
+        overlordCommand.textContent = commands[Math.floor(Math.random() * commands.length)];
+      }, 3000);
+    };
+
+    overlordCloseBtn.onclick = () => {
+      overlordPopup.style.display = 'none';
+      clearInterval(commandInterval);
+      overlordMusic.pause();
+      overlordMusic.currentTime = 0;
+      setActiveButton(btnAll);
+    };
+
+    // Click outside to close popups
+    [popupOverlay, bioPopup, overlordPopup].forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.style.display = 'none';
+      });
+    });
+
+    // Read more buttons
+    document.querySelectorAll('.read-more-btn').forEach(btn => {
+      const fullText = btn.previousElementSibling;
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !expanded);
+        btn.textContent = expanded ? 'Read More' : 'Read Less';
+        fullText.classList.toggle('show', !expanded);
+      });
+    });
+
+    // Dark mode toggle
+    const storedMode = localStorage.getItem('darkMode');
+    if (storedMode === 'enabled') {
+      document.body.classList.add('dark-mode');
+      darkToggle.textContent = '☀️ Light Mode';
+      darkToggle.setAttribute('aria-pressed', 'true');
+    }
+
+    darkToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      darkToggle.setAttribute('aria-pressed', isDark);
+      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    });
+
+    // Automatically open SPAM popup after 3 seconds
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        popupOverlay.style.display = 'flex';
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
