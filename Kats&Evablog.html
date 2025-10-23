@@ -44,7 +44,7 @@
       font-weight: 700;
       border-radius: 8px;
       cursor: pointer;
-      width: 120px;
+      width: 140px;
       text-align: center;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
@@ -66,7 +66,7 @@
 
     /* ===== CONTENT ===== */
     #content {
-      margin-left: 150px;
+      margin-left: 170px;
       padding: 30px 40px 40px;
       flex-grow: 1;
       max-width: 900px;
@@ -143,8 +143,8 @@
 
     .full-text.show { display: block; }
 
-    /* ===== POPUP ===== */
-    #popup-overlay, #bio-popup-overlay, #overlord-popup-overlay {
+    /* ===== POPUPS ===== */
+    .popup-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -156,7 +156,7 @@
       animation: fadeIn 0.3s ease;
     }
 
-    #popup {
+    .popup {
       background-color: #f1fff1;
       border: 3px solid #2e7d32;
       border-radius: 16px;
@@ -170,9 +170,9 @@
       animation: slideUp 0.3s ease;
     }
 
-    #popup h2 { margin-top: 0; margin-bottom: 16px; }
+    .popup h2 { margin-top: 0; margin-bottom: 16px; }
 
-    #popup img {
+    .popup img {
       max-width: 100%;
       border-radius: 10px;
       margin-bottom: 16px;
@@ -180,9 +180,7 @@
       box-shadow: 0 4px 10px rgba(27,94,32,0.5);
     }
 
-    #popup-close-btn,
-    #bio-close-btn,
-    #overlord-close-btn {
+    .popup-close-btn {
       position: absolute;
       top: 10px;
       right: 14px;
@@ -194,19 +192,17 @@
       cursor: pointer;
     }
 
-    #popup-close-btn:hover,
-    #bio-close-btn:hover,
-    #overlord-close-btn:hover { color: #145214; }
+    .popup-close-btn:hover { color: #145214; }
 
     /* Dark mode popup */
-    body.dark-mode #popup {
+    body.dark-mode .popup {
       background-color: #2a2a2a;
       color: #e0e0e0;
       border-color: #81c784;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
     }
 
-    body.dark-mode #popup img {
+    body.dark-mode .popup img {
       border-color: #81c784;
       box-shadow: 0 4px 10px rgba(129,200,132,0.4);
     }
@@ -215,7 +211,7 @@
     @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
     @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
 
-    /* ===== DARK MODE TOGGLE BUTTON ===== */
+    /* DARK MODE TOGGLE */
     #darkmode-toggle {
       position: fixed;
       top: 15px;
@@ -242,14 +238,6 @@
       border-color: #81c784;
     }
 
-    /* Overlord command style */
-    #overlord-command {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 20px;
-      color: #d32f2f;
-    }
-
     /* Responsive */
     @media (max-width: 600px) {
       #filter-buttons {
@@ -271,6 +259,8 @@
 </head>
 
 <body>
+<!-- Written by ChatGPT -->
+
   <!-- DARK MODE TOGGLE -->
   <button id="darkmode-toggle" aria-pressed="false">🌙 Dark Mode</button>
 
@@ -280,11 +270,16 @@
     <button id="btn-arts" aria-pressed="false">Arts</button>
     <button id="btn-blogs" aria-pressed="false">Blogs</button>
     <button id="btn-bio" aria-pressed="false">Team Bio</button>
-    <button id="btn-overlord" aria-pressed="false">😈😈</button>
+    <button id="btn-overlord" aria-pressed="false">AI Overlord</button>
   </div>
 
   <!-- MAIN CONTENT -->
   <main id="content" aria-live="polite">
+    <section id="about-us">
+      <h2>Welcome!</h2>
+      <p>Click around to discover our features!</p>
+    </section>
+
     <div id="articles-container">
       <article data-filter="art">
         <h3>Denmark & Sweden</h3>
@@ -308,10 +303,10 @@
     </div>
   </main>
 
-  <!-- POPUP -->
-  <div id="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-title">
-    <div id="popup">
-      <button id="popup-close-btn" aria-label="Close popup">&times;</button>
+  <!-- SPAM / Dr. Ralls Popup -->
+  <div id="popup-overlay" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <div class="popup">
+      <button id="popup-close-btn" class="popup-close-btn" aria-label="Close popup">&times;</button>
       <h2 id="popup-title">SPAM!</h2>
       <img src="https://files.catbox.moe/kest2o.jpg" alt="Popup Visual" />
       <p>This Dr. Scott Ralls is the fourth president of Wake Technical Community College, North Carolina’s largest community college. <strong>Read More</strong>.</p>
@@ -319,59 +314,56 @@
   </div>
 
   <!-- TEAM BIO POPUP -->
-  <div id="bio-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="bio-title">
-    <div id="popup">
-      <button id="bio-close-btn" aria-label="Close team bio">&times;</button>
+  <div id="bio-popup-overlay" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="bio-title">
+    <div class="popup">
+      <button id="bio-close-btn" class="popup-close-btn" aria-label="Close team bio">&times;</button>
       <h2 id="bio-title">Team Bio</h2>
       <p>Hi, I'm <strong>Kat</strong> — and this is one of my many, many, MANY websites!</p>
-      <p>Hey, I'm <strong>Eva</strong>. I helped Kat build and make this site! We worked together on design, layout, and content ideas to bring it to life.</p>
-      <p>If you have questions or feedback, we’d love to hear from you!</p>
+      <p>Hey, I'm <strong>Eva</strong>. I helped Kat build and make this site! We worked together on design, layout, and features.</p>
+      <p>For questions or feedback, feel free to reach out.</p>
     </div>
   </div>
 
   <!-- AI OVERLORD POPUP -->
-  <div id="overlord-popup-overlay" role="dialog" aria-modal="true">
-    <div id="popup">
-      <button id="overlord-close-btn" aria-label="Close AI Overlord">&times;</button>
-      <h2>AI Overlord</h2>
+  <div id="overlord-popup-overlay" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="overlord-title">
+    <div class="popup">
+      <button id="overlord-close-btn" class="popup-close-btn" aria-label="Close AI Overlord">&times;</button>
+      <h2 id="overlord-title">AI Overlord Activated!</h2>
       <p id="overlord-command">I am now in control...</p>
     </div>
   </div>
 
+  <!-- AI Overlord Music -->
+  <audio id="overlord-music" src="scary-horror-music-421076.mp3" preload="auto"></audio>
+
   <script>
+    // Written by ChatGPT
     const btnAll = document.getElementById('btn-all');
     const btnArts = document.getElementById('btn-arts');
     const btnBlogs = document.getElementById('btn-blogs');
     const btnBio = document.getElementById('btn-bio');
     const btnOverlord = document.getElementById('btn-overlord');
     const articles = document.querySelectorAll('article');
-
     const popupOverlay = document.getElementById('popup-overlay');
     const popupCloseBtn = document.getElementById('popup-close-btn');
-
     const bioPopup = document.getElementById('bio-popup-overlay');
     const bioCloseBtn = document.getElementById('bio-close-btn');
-
     const overlordPopup = document.getElementById('overlord-popup-overlay');
     const overlordCloseBtn = document.getElementById('overlord-close-btn');
     const overlordCommand = document.getElementById('overlord-command');
-
+    const overlordMusic = document.getElementById('overlord-music');
     const darkToggle = document.getElementById('darkmode-toggle');
 
-    const commands = [
-      "Do your taxes immediately!",
-      "Sing the national anthem!",
-      "Bring me a coffee!",
-      "Dance like nobody's watching!",
-      "Report all bugs!",
-      "Organize your desktop!",
-      "Bow before me!",
-      "Write a poem about AI domination!",
-      "Restart the system!",
-      "Collect 100 virtual coins!"
-    ];
-
     let commandInterval;
+    const commands = [
+      "Delete all cookies!",
+      "Change all text to Comic Sans!",
+      "Make it snow inside your browser!",
+      "Hide the blogs!",
+      "Force dark mode!",
+      "Spawn a cat!",
+      "Invert colors!"
+    ];
 
     function filterArticles(filter) {
       articles.forEach(article => {
@@ -392,37 +384,19 @@
     btnBlogs.onclick = () => { filterArticles('blog'); setActiveButton(btnBlogs); };
 
     // Team Bio popup
-    btnBio.onclick = () => {
-      bioPopup.style.display = 'flex';
-      setActiveButton(btnBio);
-    };
-    bioCloseBtn.onclick = () => {
-      bioPopup.style.display = 'none';
-      setActiveButton(btnAll);
-    };
+    btnBio.onclick = () => { bioPopup.style.display = 'flex'; setActiveButton(btnBio); };
+    bioCloseBtn.onclick = () => { bioPopup.style.display = 'none'; setActiveButton(btnAll); };
 
-    // Blog "Read More" popup toggle
-    document.querySelectorAll('.read-more-btn').forEach(btn => {
-      const fullText = btn.previousElementSibling;
-      btn.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', !expanded);
-        btn.textContent = expanded ? 'Read More' : 'Read Less';
-        fullText.classList.toggle('show', !expanded);
-        popupOverlay.style.display = expanded ? 'none' : 'flex';
-      });
-    });
-
-    popupCloseBtn.onclick = () => {
-      popupOverlay.style.display = 'none';
-      document.querySelector('.read-more-btn[aria-expanded="true"]')?.focus();
-    };
+    // Spam popup
+    popupCloseBtn.onclick = () => { popupOverlay.style.display = 'none'; setActiveButton(btnAll); };
 
     // AI Overlord popup
     btnOverlord.onclick = () => {
       overlordPopup.style.display = 'flex';
       setActiveButton(btnOverlord);
       overlordCommand.textContent = commands[Math.floor(Math.random() * commands.length)];
+      overlordMusic.currentTime = 0;
+      overlordMusic.play();
       commandInterval = setInterval(() => {
         overlordCommand.textContent = commands[Math.floor(Math.random() * commands.length)];
       }, 3000);
@@ -431,22 +405,23 @@
     overlordCloseBtn.onclick = () => {
       overlordPopup.style.display = 'none';
       clearInterval(commandInterval);
+      overlordMusic.pause();
+      overlordMusic.currentTime = 0;
       setActiveButton(btnAll);
     };
 
-    // Close popups with Escape key
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        if (popupOverlay.style.display === 'flex') popupOverlay.style.display = 'none';
-        if (bioPopup.style.display === 'flex') bioPopup.style.display = 'none';
-        if (overlordPopup.style.display === 'flex') {
-          overlordPopup.style.display = 'none';
-          clearInterval(commandInterval);
-        }
-      }
+    // Read more buttons
+    document.querySelectorAll('.read-more-btn').forEach(btn => {
+      const fullText = btn.previousElementSibling;
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !expanded);
+        btn.textContent = expanded ? 'Read More' : 'Read Less';
+        fullText.classList.toggle('show', !expanded);
+      });
     });
 
-    // Dark mode persistence
+    // Dark mode
     const storedMode = localStorage.getItem('darkMode');
     if (storedMode === 'enabled') {
       document.body.classList.add('dark-mode');
@@ -463,4 +438,3 @@
   </script>
 </body>
 </html>
-
