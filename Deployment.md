@@ -1,90 +1,51 @@
-Deployment Document: Roblox Obby Project
-Project Overview
+Deployment Document for HTML Blog on GitHub Codespaces
+Overview
+This document explains how to run and deploy your static HTML blog inside GitHub Codespaces and optionally publish it using GitHub Pages for public access.
 
-This project is a Roblox obby (obstacle course) created as part of the NOS 110 Vibe-Coding Jam.
-It includes AI-assisted features as required by the assignment:
+This document explains how to run and deploy your static HTML blog inside GitHub Codespaces and optionally publish it using GitHub Pages for public access. Made by AI
+Prerequisites
+GitHub account
+Repository containing your HTML blog files (index.html, assets folders)
+Access to GitHub Codespaces (or a similar cloud IDE)
+Basic understanding of Git and GitHub Pages (optional)
+Running the HTML Blog in GitHub Codespaces
+Open your repository in GitHub Codespaces
 
-Team Bio Sign – displays a short line about each team member at the start of the obby.
+Navigate to your repository on GitHub.
+Click the green Code button → Open with Codespaces → New codespace.
+This will open a VS Code environment in your browser with your project loaded.
+Preview your HTML file
 
-Spam Ads – random messages appear when players touch checkpoints.
+Locate your index.html in the file explorer panel.
+Right-click and select Open with Live Server if available.
+Alternatively, click on the file and use the built-in preview or open it via the browser preview tab in Codespaces.
+Edit and save your files
 
-AI Overlord Feature – clicking a designated part triggers a humorous “AI has taken over” message.
+Make changes to your HTML, CSS, or assets as needed.
+Save the files to see live reload in the preview.
+Deploying the Blog Using GitHub Pages
+Push your latest code to GitHub
 
-All code generated with AI is commented accordingly. All other aspects, including obby design and part placement, were manually created.
+Commit and push any changes you made in Codespaces back to the repository.
+Enable GitHub Pages
 
-System Requirements
+Go to the repository on GitHub.
+Navigate to Settings → Pages.
+Under Source, select the branch (main or master) and folder (/ root) where your HTML files are located.
+Click Save.
+Access your live blog
 
-Roblox Studio installed on Windows or Mac.
+After a few moments, GitHub Pages will publish your site.
+Your blog will be available at https://<your-github-username>.github.io/<repository-name>/.
+Troubleshooting
+If the preview doesn’t load in Codespaces, ensure the Live Server extension is installed and enabled.
+Check file paths in your HTML if assets don’t appear correctly.
+If GitHub Pages is not showing your blog, verify you selected the correct branch and folder in settings.
+Updating Your Blog
+Make edits in Codespaces or locally.
+Commit and push changes to GitHub.
+GitHub Pages will update automatically within a few minutes.
+Contact
+For support or questions, please contact: Eva Pathak & Kat Morris
 
-Internet connection to load Roblox assets.
-
-Basic familiarity with navigating Roblox Studio to test the game.
-
-How to Run the Project
-
-Open Roblox Studio.
-
-Open the project file (.rbxl or .rbxlx).
-
-Press Play to start the game.
-
-Instructions for Players
-
-Start Obby – read the Team Bio Sign at the start.
-
-Navigate through the Obby – jump across platforms and avoid falling.
-
-Checkpoints – when touching a checkpoint, a random spam ad pops up.
-
-AI Overlord – click the special part near the end to trigger a “AI has taken over” message.
-
-Project Structure
-Workspace
-│
-└── Checkpoint1, Checkpoint2…   -- Parts for spam ads
-└── ClickablePart               -- Part for AI Overlord feature
-    └── ClickDetector
-
-StarterGui
-│
-└── ScreenGui
-    └── TextLabel / ImageLabel  -- Spam ads and AI pop-ups
-
-StarterPlayer
-│
-└── StarterPlayerScripts
-    └── LocalScript             -- Controls GUI and click interactions
-
-AI Assistance
-
-Spam Ads Script – generated using AI.
-
-Click-to-show-image / AI Overlord Script – generated using AI.
-
-All other coding, obby design, and content were manually created by the team.
-
-Example of AI-generated code comment:
-
--- AI-generated: This script displays random spam ads when a checkpoint is touched
-
-Contributions
-
-[Your Name] – Team Bio setup, spam ads GUI and script, Deployment.md creation.
-
-[Partner Name] – Obby design, AI Overlord part setup, testing, and final polish.
-
-How to Modify
-
-Add spam ads: update the ads table in the LocalScript.
-
-Add checkpoints: insert Parts in Workspace named with "Checkpoint".
-
-Change images: upload new images to Roblox, get asset IDs, and update the ImageLabel’s Image property in the script.
-
-Notes
-
-Ensure all Parts are anchored and correctly named.
-
-Scripts must remain in StarterPlayerScripts (LocalScript) for GUI interactions to work properly.
-
-All content is school-appropriate.
+End of Document
